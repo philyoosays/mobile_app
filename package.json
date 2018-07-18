@@ -1,0 +1,32 @@
+{
+  "name": "chad_app",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "both": "concurrently \"cd client && REACT_APP_SECRET=authorized yarn start\" \"npm run dev\"",
+    "clean": "rm -rf node_modules && rm -rf client/node_modules && rm -rf client/dist",
+    "react-install": "cd client && yarn install",
+    "installer": "yarn install && npm run react-install",
+    "heroku-postbuild": "cd client && yarn && yarn run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^3.6.0",
+    "dotenv": "^6.0.0",
+    "nodemon": "^1.18.3"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "morgan": "^1.9.0",
+    "path": "^0.12.7",
+    "pg-promise": "^8.4.5"
+  }
+}
