@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import {  createStackNavigator } from 'react-navigation';
 
 import Login from './Login';
@@ -9,10 +9,22 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      toShow: 'register'
+      toShow: 'register',
+      clientWidth: 0,
+      clientHeight: 0
     }
 
     this.changeView = this.changeView.bind(this);
+
+    // console.log('width', this.state.width)
+  }
+
+  componentDidMount() {
+    let {height, width} = Dimensions.get('window');
+    this.setState({
+      clientWidth: width,
+      clientHeight: height,
+    })
   }
 
   changeView(newState) {
@@ -31,6 +43,7 @@ export default class App extends React.Component {
       case 'register':
         return <Register
                 changeView={this.changeView}
+                clientWidth={this.state.clientWidth}
               />
         break;
       default:
