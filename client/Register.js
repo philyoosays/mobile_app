@@ -3,6 +3,7 @@ import { StyleSheet, Animated, View, Text, TextInput, Image, TouchableHighlight 
 
 import NavBar from './NavBar';
 import MovingBubble from './MovingBubble';
+import StillBubble from './StillBubble'
 
 import purple_circle from './images/icons/purple_circle.png';
 
@@ -541,68 +542,51 @@ export default class Register extends React.Component {
           />
         </View>
         <View style={styles.bubbleContainer}>
-          <Animated.View style={circleOne.big}>
-            <Animated.View style={circleOne.small}>
-              <Text
-                style={circleOne.text}
-                onPress={() => this.setState({ showOne: true, circleTwo: '#894db2' })}
-              >Full Name</Text>
-            </Animated.View>
-          </Animated.View>
-          <Animated.View style={circleTwo.big}>
-            <Animated.View style={circleTwo.small}>
-              <Text
-                style={circleTwo.text}
-                onPress={() => this.setState({
-                  showTwo: true,
-                  circleThree: '#894db2',
-                })}
-              >Birthday</Text>
-            </Animated.View>
-          </Animated.View>
-          <Animated.View style={circleThree.big}>
-            <Animated.View style={circleThree.small}>
-              <Text
-                style={circleThree.text}
-                onPress={() => this.setState({
-                  showThree: true,
-                  circleFour: '#894db2',
-                  bigThreeY: new Animated.Value(0),
-                  bigFourY: new Animated.Value(50),
-                  bigFiveY: new Animated.Value(0),
-                  bigSixY: new Animated.Value(0),
-                })}
-              >Email</Text>
-            </Animated.View>
-          </Animated.View>
-          <Animated.View style={circleFour.big}>
-            <Animated.View style={circleFour.small}>
-              <Text
-                style={circleFour.text}
-                onPress={() => this.setState({ showFour: true, circleFive: '#894db2' })}
-              >Username</Text>
-            </Animated.View>
-          </Animated.View>
-          <Animated.View style={circleFive.big}>
-            <Animated.View style={circleFive.small}>
-              <Text
-                style={circleFive.text}
-                onPress={() => this.setState({
-                  showFive: true,
-                  circleSix: '#894db2',
-                  bigFourY: new Animated.Value(0),
-                })}
-              >Add Profile Picture</Text>
-            </Animated.View>
-          </Animated.View>
-          {/* <Animated.View style={circleSix.big}>
-            <Animated.View style={circleSix.small}>
-              <Text
-                style={circleSix.text}
-                onPress={() => this.setState({ showSix: true })}
-              >Password</Text>
-            </Animated.View>
-          </Animated.View> */}
+          <MovingBubble
+            text="Full Name"
+            styleObj={circleOne}
+            pressAction={() => this.setState({
+              showOne: true,
+              circleTwo: '#894db2',
+            })}
+          />
+          <MovingBubble
+            text="Birthday"
+            styleObj={circleTwo}
+            pressAction={() => this.setState({
+              showTwo: true,
+              circleThree: '#894db2',
+            })}
+          />
+          <MovingBubble
+            text="Email"
+            styleObj={circleThree}
+            pressAction={() => this.setState({
+              showThree: true,
+              circleFour: '#894db2',
+              bigThreeY: new Animated.Value(0),
+              bigFourY: new Animated.Value(50),
+              bigFiveY: new Animated.Value(0),
+              bigSixY: new Animated.Value(0),
+            })}
+          />
+          <MovingBubble
+            text="Username"
+            styleObj={circleFour}
+            pressAction={() => this.setState({
+              showFour: true,
+              circleFive: '#894db2'
+            })}
+          />
+          <MovingBubble
+            text="Add Profile Picture"
+            styleObj={circleFive}
+            pressAction={() => this.setState({
+              showFive: true,
+              circleSix: '#894db2',
+              bigFourY: new Animated.Value(0),
+            })}
+          />
           <MovingBubble
             text="Password"
             styleObj={circleSix}
@@ -610,11 +594,16 @@ export default class Register extends React.Component {
           />
         </View>
         <View style={styles.lowerContainer}>
-          <View style={profilePic.big}>
+          {/* <View style={profilePic.big}>
             <Animated.View style={profilePic.small}>
               {this.state.profilePic === '' ? '' : <Image style={styles.profilePic} source={{uri: this.state.profilePic}} />}
             </Animated.View>
-          </View>
+          </View> */}
+          <StillBubble
+            imageStyle={styles.profilePic}
+            imageURL={this.state.profilePic}
+            styleObj={profilePic}
+          />
           <TouchableHighlight
             style={regButton}
             onPress={() => {this.handleSubmit()}}
