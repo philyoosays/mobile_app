@@ -7,6 +7,7 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   fname TEXT,
   lname TEXT,
+  fullName TEXT,
   username TEXT,
   birthday DATE,
   email TEXT,

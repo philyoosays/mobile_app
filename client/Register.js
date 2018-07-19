@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Animated, View, Text, TextInput } from 'react-native';
+import { StyleSheet, Animated, View, Text, TextInput, Image, TouchableHighlight } from 'react-native';
 
 import NavBar from './NavBar';
+import MovingBubble from './MovingBubble';
 
 import purple_circle from './images/icons/purple_circle.png';
 
@@ -33,6 +34,8 @@ export default class Register extends React.Component {
       circleFiveY: new Animated.Value(1),
       circleSixX: new Animated.Value(0),
       circleSixY: new Animated.Value(5),
+      circleSevenX: new Animated.Value(6),
+      circleSevenY: new Animated.Value(6),
       circleOne: '#00e4a9',
       circleTwo: '#00e4a9',
       circleThree: '#00e4a9',
@@ -45,12 +48,15 @@ export default class Register extends React.Component {
       showFour: false,
       showFive: false,
       showSix: false,
-      fullName: '',
-      birthday: '',
-      username: '',
-      profilePic: '',
+      fullName: 'asda',
+      birthday: 'asd',
+      email: 'asdasd',
+      username: 'asdas',
+      profilePic: 'https://scontent-lga3-1.xx.fbcdn.net/v/t1.0-9/29103523_922121914635025_6211559712689750016_n.jpg?_nc_cat=0&oh=2df0a6e6ab4e7cfb01c5310561bf2f00&oe=5BE98BF4',
       password: ''
     }
+
+    this.handleSubmit = this.handleSubmit.bind(this);
 
   }
 
@@ -72,6 +78,8 @@ export default class Register extends React.Component {
       let randFiveY = Math.floor(Math.random() * (smallBubbleMovement + 1));
       let randSixX = Math.floor(Math.random() * (smallBubbleMovement + 1));
       let randSixY = Math.floor(Math.random() * (smallBubbleMovement + 1));
+      let randSevenX = Math.floor(Math.random() * (smallBubbleMovement + 1));
+      let randSevenY = Math.floor(Math.random() * (smallBubbleMovement + 1));
 
       Animated.timing(this.state.circleOneX, {
         toValue: randOneX,
@@ -119,6 +127,14 @@ export default class Register extends React.Component {
       }).start()
       Animated.timing(this.state.circleSixY, {
         toValue: randSixY,
+        duration: 2000
+      }).start()
+      Animated.timing(this.state.circleSevenX, {
+        toValue: randSevenX,
+        duration: 2000
+      }).start()
+      Animated.timing(this.state.circleSevenY, {
+        toValue: randSevenY,
         duration: 2000
       }).start()
 
@@ -178,20 +194,33 @@ export default class Register extends React.Component {
   }
 
   bigBubbleMove(prevState, random, middle) {
-    console.log('random',  random)
-    console.log('middle',  middle)
-    console.log('prevState', prevState)
+
     let movement = random - middle;
     movement *= 2;
     let result;
     if(movement >= 0) {
       result = parseInt(prevState) + movement - 1;
-      console.log('result', result)
     } else {
       result = parseInt(prevState) + movement;
-      console.log('result', result)
     }
     return result;
+  }
+
+  handleSubmit() {
+    fetch('/api/register', {
+      body: JSON.stringify({
+        fullName: this.state.fullName,
+        birthday: this.state.birthday,
+        email: this.state.email,
+        username: this.state.username,
+        profilePic: this.state.profilePic,
+        password: this.state.password
+      }),
+      headers: {
+        'content-type': 'application/json'
+      },
+      method: 'POST'
+    })
   }
 
   render() {
@@ -421,6 +450,42 @@ export default class Register extends React.Component {
       }
     }
 
+    let profilePic = {
+      big: {
+        ...circles.big,
+        backgroundColor: '#00e4a9',
+        borderColor: '#00e4a9',
+        top: 0,
+        left: 0,
+        display: (
+          this.state.fullName !== '' && this.state.birthday !== '' &&
+          this.state.username !== '' && this.state.email !== '' &&
+          this.state.profilePic !== ''
+        ) ? 'flex' : 'none'
+      },
+      small: {
+        ...circles.small,
+        borderColor: '#00e4a9',
+        top: this.state.circleSevenY,
+        left: this.state.circleSevenX,
+        overflow: 'hidden'
+      }
+    }
+
+    let regButton = {
+      backgroundColor: '#733a9b',
+      width: '60%',
+      height: 60,
+      borderRadius: 50,
+      justifyContent: 'center',
+      marginTop: 50,
+      display: (
+        this.state.fullName !== '' && this.state.birthday !== '' &&
+        this.state.username !== '' && this.state.email !== '' &&
+        this.state.profilePic !== ''
+      ) ? 'flex' : 'none'
+    }
+
     return(
       <View style={styles.container}>
         <NavBar title={'Create Profile'}/>
@@ -480,7 +545,7 @@ export default class Register extends React.Component {
             <Animated.View style={circleOne.small}>
               <Text
                 style={circleOne.text}
-                onPress={() => this.setState({ showOne: true })}
+                onPress={() => this.setState({ showOne: true, circleTwo: '#894db2' })}
               >Full Name</Text>
             </Animated.View>
           </Animated.View>
@@ -488,7 +553,10 @@ export default class Register extends React.Component {
             <Animated.View style={circleTwo.small}>
               <Text
                 style={circleTwo.text}
-                onPress={() => this.setState({ showTwo: true })}
+                onPress={() => this.setState({
+                  showTwo: true,
+                  circleThree: '#894db2',
+                })}
               >Birthday</Text>
             </Animated.View>
           </Animated.View>
@@ -496,7 +564,14 @@ export default class Register extends React.Component {
             <Animated.View style={circleThree.small}>
               <Text
                 style={circleThree.text}
-                onPress={() => this.setState({ showThree: true })}
+                onPress={() => this.setState({
+                  showThree: true,
+                  circleFour: '#894db2',
+                  bigThreeY: new Animated.Value(0),
+                  bigFourY: new Animated.Value(50),
+                  bigFiveY: new Animated.Value(0),
+                  bigSixY: new Animated.Value(0),
+                })}
               >Email</Text>
             </Animated.View>
           </Animated.View>
@@ -504,7 +579,7 @@ export default class Register extends React.Component {
             <Animated.View style={circleFour.small}>
               <Text
                 style={circleFour.text}
-                onPress={() => this.setState({ showFour: true })}
+                onPress={() => this.setState({ showFour: true, circleFive: '#894db2' })}
               >Username</Text>
             </Animated.View>
           </Animated.View>
@@ -512,21 +587,40 @@ export default class Register extends React.Component {
             <Animated.View style={circleFive.small}>
               <Text
                 style={circleFive.text}
-                onPress={() => this.setState({ showFive: true })}
+                onPress={() => this.setState({
+                  showFive: true,
+                  circleSix: '#894db2',
+                  bigFourY: new Animated.Value(0),
+                })}
               >Add Profile Picture</Text>
             </Animated.View>
           </Animated.View>
-          <Animated.View style={circleSix.big}>
+          {/* <Animated.View style={circleSix.big}>
             <Animated.View style={circleSix.small}>
               <Text
                 style={circleSix.text}
                 onPress={() => this.setState({ showSix: true })}
               >Password</Text>
             </Animated.View>
-          </Animated.View>
+          </Animated.View> */}
+          <MovingBubble
+            text="Password"
+            styleObj={circleSix}
+            pressAction={() => this.setState({ showSix: true })}
+          />
         </View>
         <View style={styles.lowerContainer}>
-
+          <View style={profilePic.big}>
+            <Animated.View style={profilePic.small}>
+              {this.state.profilePic === '' ? '' : <Image style={styles.profilePic} source={{uri: this.state.profilePic}} />}
+            </Animated.View>
+          </View>
+          <TouchableHighlight
+            style={regButton}
+            onPress={() => {this.handleSubmit()}}
+          >
+            <Text style={styles.regButtonText}>NEXT</Text>
+          </TouchableHighlight>
         </View>
       </View>
     );
@@ -561,6 +655,16 @@ const styles = StyleSheet.create({
   },
   lowerContainer: {
     flex: -1,
-    width: '100%'
+    width: '100%',
+    alignItems: 'center'
+  },
+  profilePic: {
+    width: '100%',
+    height: '100%'
+  },
+  regButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18
   }
 })

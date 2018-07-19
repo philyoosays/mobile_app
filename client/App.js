@@ -4,6 +4,7 @@ import {  createStackNavigator } from 'react-navigation';
 
 import Login from './Login';
 import Register from './Register';
+import Interests from './Interests';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -42,6 +43,12 @@ export default class App extends React.Component {
         break;
       case 'register':
         return <Register
+                changeView={this.changeView}
+                clientWidth={this.state.clientWidth}
+              />
+        break;
+      case 'interests':
+        return <interests
                 changeView={this.changeView}
                 clientWidth={this.state.clientWidth}
               />
