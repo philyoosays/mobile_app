@@ -5,23 +5,35 @@ import { HANDSHAKE } from 'react-native-dotenv';
 import NavBar from './NavBar';
 import MovingBubble from './MovingBubble';
 import StillBubble from './StillBubble';
+import TokenService from './TokenService';
 
 export default class Interests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       selected: [],
-      suggested: []
+      suggested: [],
+      coordinates: {}
     }
 
     this.removeSelected = this.removeSelected.bind(this);
     this.selectInterest = this.selectInterest.bind(this);
     this.getInterests = this.getInterests.bind(this);
+    this.bubbleCoordinates = this.bubbleCoordinates.bind(this);
+    this.assignCoordinates = this.assignCoordinates.bind(this);
 
   }
 
   componentDidMount() {
     this.getInterests();
+  }
+
+  bubbleCoordinates(object) {
+    let prevCoor = this.state.coordinates.slice();
+    prevCoor.push(object)
+    this.setState({
+      coordinates: prevCoor
+    })
   }
 
   removeSelected(key) {
@@ -40,20 +52,30 @@ export default class Interests extends React.Component {
   }
 
   getInterests() {
+    let token = TokenService.read();
     fetch('http://localhost:3001/api/interests', {
       body: JSON.stringify({
         secret: HANDSHAKE
       }),
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        'Authentication': `Bearer ${token}`
       },
       method: 'POST'
     })
     .then(response => response.json())
-      .then(data => {
+      .then((data) => {
+        consolelog('data', data)
+        data.interests.forEach((element, index) => {
+          element.index = index;
+        })
         this.setState({
           suggested: data.interests
         })
+        setTimeout(() => {
+          console.log('working')
+          // this.assignCoordinates()
+        }, 100)
         console.log('good to go')
       })
       .catch(error => {
@@ -68,6 +90,35 @@ export default class Interests extends React.Component {
     this.setState({
       selected: selected
     })
+  }
+
+  assignCoordinates() {
+    let hash = {};
+    let done = false;
+    this.state.suggested.forEach((element, index) => {
+      let randX = Math.floor(Math.random() * this.props.clientWidth);
+      let randY = Math.floor(Math.random() * this.props.clientHeight);
+      while(done === false) {
+        for(let keys in hash) {
+          if(hash[keys][0] < (randX + (this.props.clientWidth * 0.3))
+            || hash[keys][0] > (randX - (this.props.clientWidth * 0.3))) {
+            if(hash[keys][1] < (randY + (this.props.clientWidth * 0.3))
+              || hash[keys][1] > (randY - (this.props.clientWidth * 0.3))) {
+              // X & Y match
+              randX = Math.floor(Math.random() * this.props.clientWidth);
+              randY = Math.floor(Math.random() * this.props.clientHeight);
+            }
+          // X matches
+          } else {
+            // nothing matches
+            done = true;
+            hash[index] = [randX, randY]
+          }
+        }
+      }
+    })
+
+    console.log('hashmap', hash)
   }
 
   render() {
@@ -140,8 +191,6 @@ export default class Interests extends React.Component {
 
       let color = element[0].count >= 500 ? '#00e4a9' : '#894db2';
 
-      console.log('element', element)
-
       // const randX = Math.floor(Math.random() * (smallBubbleMovement + 1));
       // const randY = Math.floor(Math.random() * (smallBubbleMovement + 1));
       var selectedBubbles = {
@@ -204,26 +253,42 @@ export default class Interests extends React.Component {
     //           />
     // })
 
-    let color = element.count >= 500 ? '#00e4a9' : '#894db2';
+    // let color = element.count >= 500 ? '#00e4a9' : '#894db2';
 
     const randX = Math.floor(Math.random() * this.props.clientWidth);
     const randY = Math.floor(Math.random() * this.props.clientHeight);
 
-    const suggestedBubbles = {
+    const suggestedBubbleSmall = {
       big: {
         ...circles.big,
-        backgroundColor: color,
-        borderColor: color,
+        backgroundColor: '#894db2',
+        borderColor: '#894db2',
         top: randY,
-        left: (randX * Math.ceil(index / 6)) - 1
       },
       small: {
         ...circles.small,
-        borderColor: color
+        borderColor: '#894db2'
       },
       text: {
         ...circles.text,
-        color: color
+        color: '#894db2'
+      }
+    }
+
+    const suggestedBubbleBig = {
+      big: {
+        ...circles.big,
+        backgroundColor: '#00e4a9',
+        borderColor: '#00e4a9',
+        top: randY,
+      },
+      small: {
+        ...circles.small,
+        borderColor: '#00e4a9'
+      },
+      text: {
+        ...circles.text,
+        color: '#00e4a9'
       }
     }
 
@@ -237,19 +302,26 @@ export default class Interests extends React.Component {
           </ScrollView>
         </View>
         <View style={suggested}>
-          <FlatList
+        {/*}  <FlatList
             data={this.state.suggested}
             horizontal={ true }
-            renderItem={({ item }) =>
+            renderItem={({ item }) => (
+              // randX = Math.floor(Math.random() * this.props.clientWidth);
+              // suggestedBubbleBig.big.left = (randX * Math.ceil(item.index / 6)) - 1;
+              // suggestedBubbleSmall.big.left = (randX * Math.ceil(item.index / 6) - 1);
               <MovingBubble
-                key={index}
-                text={element.label}
-                styleObj={suggestedBubbles}
-                pressAction={() => {this.selectInterest(index)}}
+                text={item.label}
+                index={item.index}
+                clientWidth={this.props.clientWidth}
+                clientHeight={this.props.clientHeight}
+                sendCoordinate={this.bubbleCoordinates}
+                styleObj={parseInt(item.count) >= 500 ? suggestedBubbleBig : suggestedBubbleSmall}
+                pressAction={() => {this.selectInterest(item.id)}}
               />
-            }
+              // <Text>
+            )}
             keyExtractor={item => item.id}
-          />
+          /> */}
 
         </View>
       </View>

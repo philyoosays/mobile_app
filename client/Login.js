@@ -57,12 +57,12 @@ export default class Login extends React.Component {
     fetch('http://localhost:3001/auth/login', {
       body: JSON.stringify({
         secret: HANDSHAKE,
-        token,
         username: this.state.username,
         password: this.state.password
       }),
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        'Authentication': `Bearer ${token}`
       },
       method: 'POST'
     })

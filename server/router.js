@@ -8,6 +8,8 @@ const tokenService = require('../auth/TokenService');
 router.route('/interests')
   .post(
     controller.verifySite,
+    tokenService.receiveToken,
+    tokenService.verify,
     controller.getInterests,
     resHandler.sendJSON
   )

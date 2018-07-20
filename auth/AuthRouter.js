@@ -21,6 +21,7 @@ app.route('/register')
 app.route('/token')
   .post(
     controller.verifySite,
+    tokenService.receiveToken,
     tokenService.verify,
     authService.doesUserExist,
     resHandler.sendJSON

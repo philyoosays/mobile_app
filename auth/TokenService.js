@@ -18,7 +18,7 @@ module.exports = {
 
   async verify(req, res, next) {
     let payload = await jwt.verify(
-      req.body.token,
+      req.authToken,
       process.env.SERVER_SECRET,
       (error, decoded) => {
         if(error){
