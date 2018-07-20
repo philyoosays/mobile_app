@@ -10,7 +10,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      toShow: 'register',
+      toShow: 'interests',
       clientWidth: 0,
       clientHeight: 0
     }
@@ -48,9 +48,10 @@ export default class App extends React.Component {
               />
         break;
       case 'interests':
-        return <interests
+        return <Interests
                 changeView={this.changeView}
                 clientWidth={this.state.clientWidth}
+                clientHeight={this.state.clientHeight}
               />
         break;
       default:

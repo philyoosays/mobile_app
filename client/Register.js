@@ -1,9 +1,19 @@
 import React from 'react';
-import { StyleSheet, Animated, View, Text, TextInput, Image, TouchableHighlight } from 'react-native';
+import {
+    StyleSheet,
+    Animated,
+    View,
+    Text,
+    TextInput,
+    Image,
+    TouchableHighlight
+  } from 'react-native';
+import { HANDSHAKE } from 'react-native-dotenv';
 
+import TokenService from './TokenService';
 import NavBar from './NavBar';
 import MovingBubble from './MovingBubble';
-import StillBubble from './StillBubble'
+import StillBubble from './StillBubble';
 
 import purple_circle from './images/icons/purple_circle.png';
 
@@ -49,10 +59,10 @@ export default class Register extends React.Component {
       showFour: false,
       showFive: false,
       showSix: false,
-      fullName: 'asda',
-      birthday: 'asd',
-      email: 'asdasd',
-      username: 'asdas',
+      fullName: 'Phil Yoo',
+      birthday: '2/27/1987',
+      email: 'philyoomail@gmail.com',
+      username: 'philyoo',
       profilePic: 'https://scontent-lga3-1.xx.fbcdn.net/v/t1.0-9/29103523_922121914635025_6211559712689750016_n.jpg?_nc_cat=0&oh=2df0a6e6ab4e7cfb01c5310561bf2f00&oe=5BE98BF4',
       password: ''
     }
@@ -197,7 +207,7 @@ export default class Register extends React.Component {
   bigBubbleMove(prevState, random, middle) {
 
     let movement = random - middle;
-    movement *= 2;
+    movement *= 1.5;
     let result;
     if(movement >= 0) {
       result = parseInt(prevState) + movement - 1;
@@ -208,8 +218,9 @@ export default class Register extends React.Component {
   }
 
   handleSubmit() {
-    fetch('/api/register', {
+    fetch('http://localhost:3001/auth/register', {
       body: JSON.stringify({
+        secret: HANDSHAKE,
         fullName: this.state.fullName,
         birthday: this.state.birthday,
         email: this.state.email,
@@ -222,14 +233,21 @@ export default class Register extends React.Component {
       },
       method: 'POST'
     })
+    .then(response => response.json())
+      .then(token => {
+        TokenService.save(token);
+        this.props.changeView('interests');
+      })
+      .catch(error => {
+        alert('Something went wrong with Registration.');
+        console.log('Error: ', error);
+      })
   }
 
   render() {
 
     const circles = {
       big: {
-        // width: 120,
-        // height: 120,
         width: (this.props.clientWidth/10)*3,
         height: (this.props.clientWidth/10)*3,
         borderRadius: 70,
@@ -251,8 +269,6 @@ export default class Register extends React.Component {
         fontSize: 18,
       },
       small: {
-        // width: 110,
-        // height: 110,
         width: '90%',
         height: '90%',
         borderRadius: 60,
@@ -628,8 +644,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    // borderColor: 'red',
-    // borderWidth: 2,
+    borderColor: 'red',
+    borderWidth: 2,
     flexDirection: 'column',
     width: '100%',
     position: 'relative',

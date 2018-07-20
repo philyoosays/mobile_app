@@ -5,7 +5,7 @@ const TokenService = require('./TokenService');
 module.exports = {
   async isValidUser(req, res, next) {
     try {
-      const user = await model.findOneUser(req.body.username);
+      const user = await model.findOneUser(req.body.username.toLowerCase());
       console.log('user', user)
       res.locals.user = user[0];
       res.locals.ispassgood = await bcrypt.compare(req.body.password, user[0].pass_digest);
@@ -26,39 +26,6 @@ module.exports = {
       .catch( (err) => {
         next(err);
       })
-  },
-
-  validRegistrant(req, res, next) {
-    console.log(req.body)
-    model.findPreAuthUser(req.body.email)
-      .then(data => {
-        if(data.length === 0) {
-          res.json({
-            valid: false,
-            taken: false
-          });
-        } else if(data[0].taken === true) {
-          res.json({
-            valid: false,
-            taken: true
-          });
-        } else {
-          console.log('data: ', data[0])
-          res.locals.role = data[0].role;
-          res.locals.preAuthEmail = data[0].email;
-          next();
-        }
-      })
-  },
-
-  markTaken(req, res, next) {
-    model.markPreAuthTaken(res.locals.preAuthEmail)
-    .then(data => {
-      next()
-    })
-    .catch(err => {
-      next(err)
-    })
   },
 
   doesUserExist(req, res, next) {

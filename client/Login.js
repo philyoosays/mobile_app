@@ -1,5 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, TextInput, TouchableHighlight, Text, Image } from 'react-native';
+import { HANDSHAKE } from 'react-native-dotenv';
+
+import TokenService from './TokenService';
 
 import chadLogo from './images/chad_smiley.png';
 import fb from './images/icons/facebook_circle.png';
@@ -13,6 +16,66 @@ export default class Login extends React.Component {
       password: ''
     }
   }
+
+  componentDidMount() {
+    this.tokenCheck()
+  }
+
+  async tokenCheck() {
+    let token = await TokenService.read() || 'none';
+    console.log('token', token)
+    if(token !== 'none') {
+      fetch('http://localhost:3001/auth/token', {
+        body: JSON.stringify({
+          secret: HANDSHAKE,
+          token: token
+        }),
+        headers: {
+          'content-type': 'application/json'
+        },
+        method: 'POST'
+      })
+      .then(response => response.json())
+        .then(data => {
+          console.log('data: ', data)
+          if(data.error) {
+            console.log('wtf')
+            // window.location.replace('/cpanel/login');
+          }
+          if(data.payload) {
+            this.props.changeView('interests');
+          }
+        })
+      .catch(err => {
+        console.log('error')
+      })
+    }
+  }
+
+  async handleLogin() {
+    let token = await TokenService.read();
+    fetch('http://localhost:3001/auth/login', {
+      body: JSON.stringify({
+        secret: HANDSHAKE,
+        token,
+        username: this.state.username,
+        password: this.state.password
+      }),
+      headers: {
+        'content-type': 'application/json'
+      },
+      method: 'POST'
+    })
+    .then(response => response.json())
+      .then(async (token) => {
+        await TokenService.save(token);
+        this.props.changeView('interests')
+      })
+      .catch(error => {
+        alert('Login Unsuccessful');
+      })
+  }
+
   render() {
     // const { navigate } = this.props.navigation;
     return(
@@ -44,7 +107,10 @@ export default class Login extends React.Component {
           <Text style={styles.forgotPass}>Forgot Password?</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableHighlight style={styles.loginButton}>
+          <TouchableHighlight
+            style={styles.loginButton}
+            onPress={() => this.handleLogin()}
+          >
             <Text style={styles.buttonText}>LOG IN</Text>
           </TouchableHighlight>
         </View>

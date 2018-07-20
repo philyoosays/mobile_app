@@ -7,19 +7,9 @@ const controller = require('../server/controller');
 
 const app = express.Router();
 
-app.route('/addallowed')
-  .post(
-    controller.verifySite,
-    tokenService.verify,
-    controller.addAllowedUser,
-    resHandler.sendJSON
-  )
-
 app.route('/register')
   .post(
     controller.verifySite,
-    authService.validRegistrant,
-    authService.markTaken,
     authService.doesUserExist,
     authService.generatePassword,
     authService.registerUser,
@@ -40,13 +30,6 @@ app.route('/username')
   .post(
     controller.verifySite,
     authService.doesUserExist,
-    resHandler.sendJSON
-  )
-
-app.route('/preauth')
-  .post(
-    controller.verifySite,
-    authService.validRegistrant,
     resHandler.sendJSON
   )
 

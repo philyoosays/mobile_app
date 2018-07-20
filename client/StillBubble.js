@@ -2,6 +2,7 @@ import React from 'react';
 import { Animated, View, Text, Image } from 'react-native';
 
 export default function StillBubble(props) {
+  console.log('props', props)
   return(
     <View style={props.styleObj.big}>
       <Animated.View style={props.styleObj.small}>

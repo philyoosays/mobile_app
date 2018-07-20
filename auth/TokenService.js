@@ -8,8 +8,8 @@ module.exports = {
         payload,
         process.env.SERVER_SECRET,
         {
-          expiresIn: '7d',
-          issuer:    'ERIviaYoo',
+          expiresIn: '200d',
+          issuer:    'ChadApp',
         },
         (err, data) => err ? reject(err) : resolve(data),
       ),

@@ -21,9 +21,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomColor: 'black',
     borderBottomWidth: 1,
-    elevation: 15
-    // position: 'absolute',
-    // top: 0
+    elevation: 20,
+    position: 'relative',
+    top: 0
   },
   title: {
     position: 'absolute',
