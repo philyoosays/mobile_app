@@ -4,9 +4,9 @@ const TokenService = {
   async save(token) {
     await AsyncStorage.setItem('@ChadApp:authToken', token.token);
   },
-  async read() {
+  read() {
     // console.log(window.localStorage.getItem('authToken'))
-    return await AsyncStorage.getItem('@ChadApp:authToken');
+    return AsyncStorage.getItem('@ChadApp:authToken');
   },
   async destroy() {
     await AsyncStorage.removeItem('@ChadApp:authToken');

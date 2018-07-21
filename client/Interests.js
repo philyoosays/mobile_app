@@ -51,21 +51,20 @@ export default class Interests extends React.Component {
     })
   }
 
-  getInterests() {
-    let token = TokenService.read();
+  async getInterests() {
+    let token = await TokenService.read();
     fetch('http://localhost:3001/api/interests', {
       body: JSON.stringify({
         secret: HANDSHAKE
       }),
       headers: {
         'content-type': 'application/json',
-        'Authentication': `Bearer ${token}`
+        'authorization': `Bearer ${token}`
       },
       method: 'POST'
     })
     .then(response => response.json())
       .then((data) => {
-        consolelog('data', data)
         data.interests.forEach((element, index) => {
           element.index = index;
         })
@@ -74,7 +73,7 @@ export default class Interests extends React.Component {
         })
         setTimeout(() => {
           console.log('working')
-          // this.assignCoordinates()
+          this.assignCoordinates()
         }, 100)
         console.log('good to go')
       })
@@ -93,32 +92,51 @@ export default class Interests extends React.Component {
   }
 
   assignCoordinates() {
-    let hash = {};
-    let done = false;
-    this.state.suggested.forEach((element, index) => {
+
+    /* NOTE. The yCoor object infact does have the keys and values reversed
+      compared to the xCoor object. This is intentional.
+    */
+    let xCoor = {};
+    let yCoor = {};
+    let suggested = this.state.suggested.slice();
+
+    suggested.forEach((element, index) => {
+      let done = false;
       let randX = Math.floor(Math.random() * this.props.clientWidth);
       let randY = Math.floor(Math.random() * this.props.clientHeight);
-      while(done === false) {
-        for(let keys in hash) {
-          if(hash[keys][0] < (randX + (this.props.clientWidth * 0.3))
-            || hash[keys][0] > (randX - (this.props.clientWidth * 0.3))) {
-            if(hash[keys][1] < (randY + (this.props.clientWidth * 0.3))
-              || hash[keys][1] > (randY - (this.props.clientWidth * 0.3))) {
-              // X & Y match
-              randX = Math.floor(Math.random() * this.props.clientWidth);
-              randY = Math.floor(Math.random() * this.props.clientHeight);
+      let bubbleWidth = this.props.clientWidth * 0.3;
+      if(Object.keys(xCoor).length === 0) {
+        xCoor[randX] = index;
+        yCoor[index] = randY;
+      } else {
+        while(done === false) {
+          let redo = false;
+          for(let keys in xCoor) {
+            if(keys >= (randX - bubbleWidth) && keys <= (randX + bubbleWidth)) {
+              let arrIndex = xCoor[keys];
+              if(yCoor[arrIndex] >= (randY - bubbleWidth) && yCoor[arrIndex] <= (randY + bubbleWidth)) {
+                redo = true;
+              }
             }
-          // X matches
-          } else {
-            // nothing matches
-            done = true;
-            hash[index] = [randX, randY]
           }
+          if(redo === true) {
+            randX = Math.floor(Math.random() * this.props.clientWidth);
+            randY = Math.floor(Math.random() * this.props.clientHeight);
+          } else {
+            xCoor[randX] = index;
+            yCoor[index] = randY;
+          }
+          done = !redo;
         }
       }
+
+      element.xAxis = randX;
+      element.yAxis = randY;
     })
 
-    console.log('hashmap', hash)
+    this.setState({
+      suggested: suggested
+    })
   }
 
   render() {
@@ -128,7 +146,7 @@ export default class Interests extends React.Component {
         height: (this.props.clientWidth/10)*3,
         borderRadius: 70,
         borderWidth: 1,
-        position: 'relative',
+        position: 'absolute',
         shadowColor: '#000000',
         shadowOffset: {
           width: 0,
@@ -136,8 +154,7 @@ export default class Interests extends React.Component {
         },
         shadowRadius: 5,
         shadowOpacity: 1.0,
-        elevation: 14,
-        flex: 1
+        elevation: 14
       },
       text: {
         // position: 'absolute',
@@ -218,52 +235,11 @@ export default class Interests extends React.Component {
               />
     })
 
-    // const showSuggested = this.state.suggested.map((element, index) => {
-
-    //   let color = element.count >= 500 ? '#00e4a9' : '#894db2';
-
-    //   const randX = Math.floor(Math.random() * this.props.clientWidth);
-    //   const randY = Math.floor(Math.random() * this.props.clientHeight);
-
-    //   var suggestedBubbles = {
-    //     big: {
-    //       ...circles.big,
-    //       backgroundColor: color,
-    //       borderColor: color,
-    //       top: randY,
-    //       left: (randX * Math.ceil(index / 6)) - 1
-    //     },
-    //     small: {
-    //       ...circles.small,
-    //       borderColor: color
-    //     },
-    //     text: {
-    //       ...circles.text,
-    //       color: color
-    //     }
-    //   }
-
-    //   console.log(index)
-
-    //   return <MovingBubble
-    //             key={index}
-    //             text={element.label}
-    //             styleObj={suggestedBubbles}
-    //             pressAction={() => {this.selectInterest(index)}}
-    //           />
-    // })
-
-    // let color = element.count >= 500 ? '#00e4a9' : '#894db2';
-
-    const randX = Math.floor(Math.random() * this.props.clientWidth);
-    const randY = Math.floor(Math.random() * this.props.clientHeight);
-
     const suggestedBubbleSmall = {
       big: {
         ...circles.big,
         backgroundColor: '#894db2',
         borderColor: '#894db2',
-        top: randY,
       },
       small: {
         ...circles.small,
@@ -280,7 +256,6 @@ export default class Interests extends React.Component {
         ...circles.big,
         backgroundColor: '#00e4a9',
         borderColor: '#00e4a9',
-        top: randY,
       },
       small: {
         ...circles.small,
@@ -292,17 +267,33 @@ export default class Interests extends React.Component {
       }
     }
 
+    console.log('suggested', this.state.suggested)
+
+    const showSuggested = this.state.suggested.length > 0 && this.state.suggested[0].hasOwnProperty('xAxis') ?
+      this.state.suggested.map((element, index) => {
+        return <MovingBubble
+                  key={index}
+                  text={element.label}
+                  index={element.index}
+                  position={{ xAxis: element.xAxis, yAxis: element.yAxis }}
+                  clientWidth={this.props.clientWidth}
+                  clientHeight={this.props.clientHeight}
+                  styleObj={parseInt(element.count) >= 500 ? suggestedBubbleBig : suggestedBubbleSmall}
+                  pressAction={() => {this.selectInterest(element.id)}}
+                />
+      }) : '';
+
     return(
-      <View style={styles.container}>
-        <NavBar title={'Select Interests'} />
+      <View style={ styles.container }>
+        <NavBar title={ 'Select Interests' } />
         <View style={selected}>
           <ScrollView
             horizontal={ true } >
-              {showSelected}
+              { showSelected }
           </ScrollView>
         </View>
-        <View style={suggested}>
-        {/*}  <FlatList
+        <View style={ suggested }>
+         {/* } <FlatList
             data={this.state.suggested}
             horizontal={ true }
             renderItem={({ item }) => (
@@ -312,6 +303,7 @@ export default class Interests extends React.Component {
               <MovingBubble
                 text={item.label}
                 index={item.index}
+                position={{ xAxis: item.xAxis, yAxis: item.yAxis }}
                 clientWidth={this.props.clientWidth}
                 clientHeight={this.props.clientHeight}
                 sendCoordinate={this.bubbleCoordinates}
@@ -322,7 +314,10 @@ export default class Interests extends React.Component {
             )}
             keyExtractor={item => item.id}
           /> */}
-
+          <ScrollView
+            horizontal={ true } >
+              { showSuggested }
+          </ScrollView>
         </View>
       </View>
     );
