@@ -2,6 +2,7 @@ import React from 'react';
 import {
     StyleSheet,
     Animated,
+    Easing,
     View,
     Text,
     TextInput,
@@ -94,59 +95,73 @@ export default class Register extends React.Component {
 
       Animated.timing(this.state.circleOneX, {
         toValue: randOneX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleOneY, {
         toValue: randOneY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleTwoX, {
         toValue: randTwoX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleTwoY, {
         toValue: randTwoY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleThreeX, {
         toValue: randThreeX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleThreeY, {
         toValue: randThreeY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleFourX, {
         toValue: randFourX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleFourY, {
         toValue: randFourY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleFiveX, {
         toValue: randFiveX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleFiveY, {
         toValue: randFiveY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleSixX, {
         toValue: randSixX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleSixY, {
         toValue: randSixY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleSevenX, {
         toValue: randSevenX,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.circleSevenY, {
         toValue: randSevenY,
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
 
       //////////////////////////////////////
@@ -155,51 +170,63 @@ export default class Register extends React.Component {
 
       Animated.timing(this.state.bigOneX, {
         toValue: this.bigBubbleMove(this.state.bigOneX._value, randOneX, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigOneY, {
         toValue: this.bigBubbleMove(this.state.bigOneY._value, randOneY, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigTwoX, {
         toValue: this.bigBubbleMove(this.state.bigTwoX._value, randTwoX, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigTwoY, {
         toValue: this.bigBubbleMove(this.state.bigTwoY._value, randTwoY, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigThreeX, {
         toValue: this.bigBubbleMove(this.state.bigThreeX._value, randThreeX, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigThreeY, {
         toValue: this.bigBubbleMove(this.state.bigThreeY._value, randThreeY, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigFourX, {
         toValue: this.bigBubbleMove(this.state.bigFourX._value, randFourX, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigFourY, {
         toValue: this.bigBubbleMove(this.state.bigFourY._value, randFourY, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigFiveX, {
         toValue: this.bigBubbleMove(this.state.bigFiveX._value, randFiveX, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigFiveY, {
         toValue: this.bigBubbleMove(this.state.bigFiveY._value, randFiveY, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigSixX, {
         toValue: this.bigBubbleMove(this.state.bigSixX._value, randSixX, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
       Animated.timing(this.state.bigSixY, {
         toValue: this.bigBubbleMove(this.state.bigSixY._value, randSixY, smallBubbleMiddle),
-        duration: 2000
+        duration: 2000,
+        easing: Easing.in
       }).start()
     }, 2000)
   }

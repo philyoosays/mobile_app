@@ -3,13 +3,16 @@ import { Animated, View, Text } from 'react-native';
 
 export default function MovingBubble(props) {
 
-  let theXAxis = props.position.xAxis;
-  // if(props.index > 0) {
-  //   theXAxis *= Math.ceil(props.index / 6)
-  // }
-  props.styleObj.big.top = props.position.yAxis;
-  props.styleObj.big.left = theXAxis;
-  // console.log('style', props.position)
+  if(props.position) {
+    props.styleObj.big.top = props.position.yAxis;
+    props.styleObj.big.left = props.position.xAxis;
+  }
+
+  // let smallBubbleMovement = 11;
+  // let smallBubbleMiddle = Math.floor(smallBubbleMovement / 2);
+
+
+
   return(
     <Animated.View style={props.styleObj.big}>
       <Animated.View style={props.styleObj.small}>

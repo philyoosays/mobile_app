@@ -64,18 +64,15 @@ export default class Interests extends React.Component {
       method: 'POST'
     })
     .then(response => response.json())
-      .then((data) => {
+      .then(async (data) => {
         data.interests.forEach((element, index) => {
           element.index = index;
         })
-        this.setState({
+        await this.setState({
           suggested: data.interests
         })
-        setTimeout(() => {
-          console.log('working')
-          this.assignCoordinates()
-        }, 100)
-        console.log('good to go')
+        await this.assignCoordinates();
+
       })
       .catch(error => {
         console.log('thisis not happening')
@@ -90,6 +87,13 @@ export default class Interests extends React.Component {
       selected: selected
     })
   }
+
+  // animateSmallBubbles() {
+  //   Animated.timing(this.state.suggested., {
+  //       toValue: randOneX,
+  //       duration: 2000
+  //     }).start()
+  // }
 
   assignCoordinates() {
 
@@ -138,6 +142,8 @@ export default class Interests extends React.Component {
       suggested: suggested
     })
   }
+
+
 
   render() {
     const circles = {
@@ -267,17 +273,15 @@ export default class Interests extends React.Component {
       }
     }
 
-    console.log('suggested', this.state.suggested)
-
     const showSuggested = this.state.suggested.length > 0 && this.state.suggested[0].hasOwnProperty('xAxis') ?
       this.state.suggested.map((element, index) => {
         return <MovingBubble
                   key={index}
                   text={element.label}
-                  index={element.index}
+                  // index={element.index}
                   position={{ xAxis: element.xAxis, yAxis: element.yAxis }}
-                  clientWidth={this.props.clientWidth}
-                  clientHeight={this.props.clientHeight}
+                  // clientWidth={this.props.clientWidth}
+                  // clientHeight={this.props.clientHeight}
                   styleObj={parseInt(element.count) >= 500 ? suggestedBubbleBig : suggestedBubbleSmall}
                   pressAction={() => {this.selectInterest(element.id)}}
                 />
@@ -315,7 +319,9 @@ export default class Interests extends React.Component {
             keyExtractor={item => item.id}
           /> */}
           <ScrollView
-            horizontal={ true } >
+            horizontal={ true }
+            pagingEnabled={ true }
+            overScrollMode="always" >
               { showSuggested }
           </ScrollView>
         </View>
